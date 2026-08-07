@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "reme",
-      "source": "./reme",
+      "source": "./plugins/claude_code/reme",
       "description": "Connect Claude Code to a running ReMe MCP server for file-native long-term memory: recall (digest) on demand, plus automatic background recording of each session via a Stop hook."
     }
   ]
