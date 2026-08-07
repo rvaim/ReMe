@@ -1,0 +1,25 @@
+{
+  "name": "reme-marketplace",
+  "interface": {
+    "displayName": "ReMe 插件市场"
+  },
+  "plugins": [
+    {
+      "name": "reme",
+      "version": "0.1.0",
+      "source": {
+        "source": "local",
+        "path": "./plugins/reme"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity",
+      "interface": {
+        "displayName": "ReMe Memory",
+        "shortDescription": "Codex 文件原生长期记忆:按需召回 + 会话自动记录。"
+      }
+    }
+  ]
+}
