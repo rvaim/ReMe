@@ -1,28 +1,32 @@
 {
   "name": "reme",
   "version": "0.1.1",
-  "description": "File-native long-term memory for Codex, backed by a running ReMe MCP server. A memory skill recalls long-term knowledge on demand; recording is automatic via a Stop hook that records each session in the background.",
+  "description": "ReMe long-term memory integration for Codex, adapted from ReMe's official Claude Code plugin.",
   "author": {
-    "name": "EconML team of Alibaba Tongyi Lab",
-    "email": "jinli.yl@alibaba-inc.com"
+    "name": "Community Codex adapter for ReMe"
   },
-  "homepage": "https://reme.agentscope.io/",
-  "repository": "https://github.com/agentscope-ai/ReMe",
   "license": "Apache-2.0",
-  "keywords": ["memory", "reme", "mcp", "long-term-memory", "agent"],
+  "keywords": [
+    "reme",
+    "memory",
+    "codex",
+    "mcp"
+  ],
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "ReMe Memory",
-    "shortDescription": "Codex 文件原生长期记忆:按需召回 + 会话自动记录",
-    "longDescription": "连接运行中的 ReMe MCP 服务器,为 Codex 提供文件原生长期记忆:reme-memory skill 按需召回(search/traverse/daily_list/frontmatter_read/read),Stop hook 在会话结束时自动后台记录。",
-    "developerName": "EconML team of Alibaba Tongyi Lab",
+    "displayName": "ReMe for Codex",
+    "shortDescription": "Persistent ReMe memory for Codex.",
+    "longDescription": "Recall ReMe memory through MCP and record Codex turns automatically with lifecycle hooks.",
+    "developerName": "Community Codex adapter for ReMe",
     "category": "Productivity",
-    "capabilities": ["Read"],
-    "websiteURL": "https://reme.agentscope.io/",
-    "brandColor": "#10A37F",
+    "capabilities": [
+      "Long-term memory recall",
+      "Automatic turn capture",
+      "ReMe MCP tools"
+    ],
     "defaultPrompt": [
-      "使用 ReMe 召回长期记忆后再回答关于历史会话、偏好或项目决策的问题。"
+      "Recall relevant ReMe memory before answering when prior context matters."
     ]
   }
 }

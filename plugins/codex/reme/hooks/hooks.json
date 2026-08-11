@@ -1,13 +1,25 @@
 {
-  "description": "On stop, record this Codex session into ReMe long-term memory (background, async).",
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/auto_memory.py\" --capture",
+            "commandWindows": "\"${PLUGIN_ROOT}\\bin\\reme-hook-launcher.exe\" --capture",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/auto_memory.py\" || python \"${CLAUDE_PLUGIN_ROOT}/hooks/auto_memory.py\"",
-            "timeout": 30
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/auto_memory.py\" --stop",
+            "commandWindows": "\"${PLUGIN_ROOT}\\bin\\reme-hook-launcher.exe\" --stop",
+            "timeout": 10
           }
         ]
       }
