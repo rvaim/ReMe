@@ -8,7 +8,7 @@
       "name": "reme-memory",
       "source": "./plugins/reme-memory",
       "description": "Shared ReMe long-term memory integration for Claude Code and Codex.",
-      "version": "0.2.0+universal.local-20260811-1021Z"
+      "version": "0.2.1+universal.local-20260812-0322Z"
     }
   ]
 }

@@ -4,7 +4,7 @@
 
 仓库本身就是一个 marketplace：直接在 Codex / Claude Code 中把本仓库添加为 marketplace 即可在线安装，无需克隆、打包或解压。本仓库 `main` 分支是 ReMe 官方服务端代码，插件发布在 `rvaim` 分支，安装时需按下方说明指定分支。
 
-当前版本：`0.2.0+universal.local-20260811-1021Z`。
+当前版本：`0.2.1+universal.local-20260812-0322Z`。
 
 ## 主要能力
 
