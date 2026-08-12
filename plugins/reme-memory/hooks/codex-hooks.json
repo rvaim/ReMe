@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${PLUGIN_ROOT}/bin/reme-hook-launcher\" --capture",
+            "commandWindows": "& \"${PLUGIN_ROOT}\\bin\\reme-hook-launcher.exe\" --capture",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${PLUGIN_ROOT}/bin/reme-hook-launcher\" --stop",
+            "commandWindows": "& \"${PLUGIN_ROOT}\\bin\\reme-hook-launcher.exe\" --stop",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

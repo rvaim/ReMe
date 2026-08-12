@@ -1,0 +1,19 @@
+{
+  "name": "reme-memory",
+  "version": "0.2.0+universal.local-20260811-1021Z",
+  "description": "Shared ReMe long-term memory integration for Claude Code and Codex, based on ReMe's official Claude Code plugin.",
+  "author": {
+    "name": "Community universal adapter for ReMe"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "reme",
+    "memory",
+    "claude-code",
+    "codex",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/claude-hooks.json",
+  "mcpServers": "./.mcp.json"
+}
