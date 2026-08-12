@@ -1,6 +1,6 @@
 # ReMe Universal Marketplace
 
-This local marketplace contains `reme-memory` version `0.3.1+universal.local-20260812-0613Z` for Claude Code and Codex.
+This local marketplace contains `reme-memory` version `0.3.2+universal.local-20260812-0628Z` for Claude Code and Codex.
 
 The plugin provides:
 

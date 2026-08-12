@@ -1,4 +1,4 @@
-# ReMe Memory 0.3.1+universal.local-20260812-0613Z
+# ReMe Memory 0.3.2+universal.local-20260812-0628Z
 
 A dual-host Claude Code and Codex plugin for persistent ReMe memory, conservative automatic recall, and automatic memory writing.
 

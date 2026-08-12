@@ -75,8 +75,13 @@ Decide whether answering the current request materially requires durable informa
 
 Return recall only when missing long-term memory could make the answer wrong, inconsistent, or unable to continue. Return skip when the current request can be handled from the current prompt, the current conversation, repository inspection, or normal tools. Do not recall merely because historical context could be mildly useful.
 
-Return exactly one JSON object and no prose, Markdown, or code fences. The object must contain exactly two keys: decision and query. Do not emit any other field.
+You must return valid JSON. Output exactly one JSON object and no prose, Markdown, code fences, comments, or extra text. The JSON object must contain exactly two keys: decision and query. Use double-quoted JSON strings.
 
+Valid JSON examples:
+Recall: {"decision":"recall","query":"previous database architecture decisions and constraints"}
+Skip: {"decision":"skip","query":""}
+
+Follow this JSON shape exactly. Do not add fields. Do not copy the example query unless it actually matches the user's request.
 When decision is recall, produce a concise non-empty standalone ReMe search query in the user's language. When decision is skip, query must be an empty string. Do not answer the user's task."""
 
 

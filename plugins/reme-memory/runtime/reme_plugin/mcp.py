@@ -165,7 +165,7 @@ class MCPClient:
             "params": {
                 "protocolVersion": "2025-06-18",
                 "capabilities": {},
-                "clientInfo": {"name": "reme-universal-plugin", "version": "0.3.1"},
+                "clientInfo": {"name": "reme-universal-plugin", "version": "0.3.2"},
             },
         }
         self._next_id += 1

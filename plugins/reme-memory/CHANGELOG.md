@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2+universal.local-20260812-0628Z
+
+- Strengthened the Recall Gate prompt for JSON mode: explicitly require valid JSON, include valid `recall` and `skip` JSON examples, and forbid prose, Markdown, code fences, comments, or extra text.
+- Kept the Responses request format as `text.format.type=json_object`, with the existing two-field `decision/query` contract and strict local validation.
+- Kept the configured `reasoning_effort` and output-token budget unchanged.
+
 ## 0.3.1+universal.local-20260812-0613Z
 
 - Changed the Recall Gate Responses request from `json_schema` to `json_object` for providers that reject Structured Outputs.
