@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1+universal.local-20260812-0613Z
+
+- Changed the Recall Gate Responses request from `json_schema` to `json_object` for providers that reject Structured Outputs.
+- Kept the Gate output contract to exactly `decision` and `query`, with strict local validation and no confidence field.
+- Removed the legacy recall-specific config environment alias; the shared config is only `~/.reme/config/llm.json` unless `REME_LLM_CONFIG` explicitly overrides it.
+
 ## 0.3.0+universal.local-20260812-0300Z
 
 - Added conservative automatic recall for Claude Code and Codex.

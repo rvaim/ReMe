@@ -31,7 +31,7 @@ def data_root() -> Path:
 
 def config_path() -> Path:
     """Return the shared LLM configuration used by all plugin LLM features."""
-    override = os.environ.get("REME_LLM_CONFIG") or os.environ.get("REME_RECALL_GATE_CONFIG")
+    override = os.environ.get("REME_LLM_CONFIG")
     if override:
         return Path(override).expanduser()
     return Path.home() / ".reme" / "config" / CONFIG_NAME

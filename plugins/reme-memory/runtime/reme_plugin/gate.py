@@ -75,17 +75,10 @@ Decide whether answering the current request materially requires durable informa
 
 Return recall only when missing long-term memory could make the answer wrong, inconsistent, or unable to continue. Return skip when the current request can be handled from the current prompt, the current conversation, repository inspection, or normal tools. Do not recall merely because historical context could be mildly useful.
 
-When decision is recall, produce a concise standalone ReMe search query in the user's language. When decision is skip, query must be an empty string. Do not answer the user's task."""
+Return exactly one JSON object and no prose, Markdown, or code fences. The object must contain exactly two keys: decision and query. Do not emit any other field.
 
-GATE_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "decision": {"type": "string", "enum": ["recall", "skip"]},
-        "query": {"type": "string"},
-    },
-    "required": ["decision", "query"],
-    "additionalProperties": False,
-}
+When decision is recall, produce a concise non-empty standalone ReMe search query in the user's language. When decision is skip, query must be an empty string. Do not answer the user's task."""
+
 
 
 @dataclass(frozen=True)
@@ -271,11 +264,7 @@ def call_responses_gate(
         "reasoning": {"effort": str(config.get("reasoning_effort") or "none")},
         "text": {
             "format": {
-                "type": "json_schema",
-                "name": "reme_recall_gate",
-                "description": "Decide whether durable ReMe memory is required and produce a search query.",
-                "strict": True,
-                "schema": GATE_SCHEMA,
+                "type": "json_object",
             }
         },
         "store": False,
@@ -308,16 +297,19 @@ def call_responses_gate(
         response_obj = json.loads(raw)
         result = json.loads(_extract_output_text(response_obj))
     except Exception as exc:
-        raise RuntimeError("Responses API did not return valid structured gate JSON") from exc
-    decision = result.get("decision") if isinstance(result, dict) else None
-    query = result.get("query") if isinstance(result, dict) else None
+        raise RuntimeError("Responses API did not return valid gate JSON") from exc
+    if not isinstance(result, dict) or set(result) != {"decision", "query"}:
+        raise RuntimeError("Responses API gate result must contain exactly decision and query")
+    decision = result.get("decision")
+    query = result.get("query")
     if decision not in ("recall", "skip") or not isinstance(query, str):
         raise RuntimeError("Responses API gate result failed local validation")
-    if decision == "recall" and not query.strip():
-        query = prompt.strip()
-    if decision == "skip":
-        query = ""
-    return GateDecision(decision, query.strip(), "llm", elapsed)
+    query = query.strip()
+    if decision == "recall" and not query:
+        raise RuntimeError("Responses API recall decision requires a non-empty query")
+    if decision == "skip" and query:
+        raise RuntimeError("Responses API skip decision requires an empty query")
+    return GateDecision(decision, query, "llm", elapsed)
 
 
 def decide(

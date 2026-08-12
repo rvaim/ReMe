@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "reme-memory",
   "displayName": "ReMe Memory",
-  "version": "0.3.0+universal.local-20260812-0300Z",
+  "version": "0.3.1+universal.local-20260812-0613Z",
   "description": "Persistent ReMe memory with automatic gated recall and automatic memory writing.",
   "author": {
     "name": "ReMe Universal Plugin contributors"

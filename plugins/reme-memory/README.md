@@ -1,4 +1,4 @@
-# ReMe Memory 0.3.0+universal.local-20260812-0300Z
+# ReMe Memory 0.3.1+universal.local-20260812-0613Z
 
 A dual-host Claude Code and Codex plugin for persistent ReMe memory, conservative automatic recall, and automatic memory writing.
 
@@ -18,7 +18,7 @@ Each `UserPromptSubmit` follows this flow:
 
 1. Explicit references to earlier sessions, durable preferences, or prior decisions recall immediately.
 2. Clearly self-contained tasks, including ordinary variable renames, skip recall immediately.
-3. Ambiguous prompts call the configured OpenAI Responses API with `reasoning.effort=none`, `store=false`, and strict `text.format.type=json_schema` output.
+3. Ambiguous prompts call the configured OpenAI Responses API with `reasoning.effort=none`, `store=false`, and `text.format.type=json_object` output with strict local validation.
 4. Only a `recall` decision calls ReMe `search`, reads a small number of matching notes, and injects a bounded `<reme_recalled_memory>` context block.
 5. Gate API or ReMe retrieval failures fail open: the original prompt continues without automatic memory context.
 
@@ -75,7 +75,7 @@ The Gate sends the current prompt and a small number of recent user prompts to `
 
 `chmod 600 ~/.reme/config/llm.json`
 
-The key is never copied into the plugin cache and is never written to logs. Set `REME_LLM_CONFIG` only when a non-default config path is required. The old `REME_RECALL_GATE_CONFIG` environment variable remains accepted as a compatibility alias.
+The key is never copied into the plugin cache and is never written to logs. Set `REME_LLM_CONFIG` only when a non-default config path is required. No legacy recall-specific config path or environment-variable alias is read.
 
 ## Start ReMe
 

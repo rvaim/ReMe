@@ -1,4 +1,4 @@
-# Verification report for 0.3.0+universal.local-20260812-0300Z
+# Verification report for 0.3.1+universal.local-20260812-0613Z
 
 The build is validated with local mock OpenAI Responses and ReMe Streamable HTTP MCP servers.
 
@@ -7,8 +7,10 @@ Covered behavior:
 - explicit-history rule recall;
 - explicit self-contained rename skip without API or ReMe access;
 - ambiguous prompt OpenAI Responses routing;
-- `reasoning.effort=none`, `store=false`, and strict `text.format.type=json_schema` request fields;
+- `reasoning.effort=none`, `store=false`, and `text.format.type=json_object` request field plus strict local `decision/query` validation;
 - Responses `recall` and `skip` decisions;
+- exact two-key Gate JSON contract (`decision`, `query`) with extra-field and invalid-query rejection;
+- no legacy recall-specific config filename or environment alias in runtime or documentation;
 - Responses failure fail-open behavior;
 - ReMe `search` plus bounded `read` calls;
 - guarded additional-context JSON for `UserPromptSubmit`;
