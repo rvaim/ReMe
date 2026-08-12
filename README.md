@@ -1,6 +1,8 @@
-# ReMe Memory（Claude Code + Codex 通用本地 Marketplace）
+# ReMe Memory（Claude Code + Codex 通用 Marketplace）
 
 这是一个同时支持 **Claude Code** 与 **OpenAI Codex** 的 ReMe 长期记忆插件。它以 ReMe 官方 Claude Code 集成为主基线，只在 Codex 缺少服务端 transcript adapter 的位置增加必要适配。两个宿主共用一个插件目录、一份 Recall Skill、一份 MCP 配置和同一条记忆语言策略；manifest 与 hook 配置仅保留宿主协议要求的最小差异。
+
+仓库本身就是一个 marketplace：克隆后把仓库根目录作为 marketplace 路径即可，无需单独打包或解压。
 
 当前版本：`0.2.0+universal.local-20260811-1021Z`。
 
@@ -39,22 +41,22 @@ Claude Code 路径不把会话正文发送给 ReMe，也不重新实现 transcri
 ## 通用插件目录
 
 ```text
-reme-universal-marketplace/
-├── .agents/plugins/marketplace.json       # Codex marketplace
-├── .claude-plugin/marketplace.json        # Claude Code marketplace
+ReMe/                                  # 仓库根目录 = marketplace 根目录
+├── .agents/plugins/marketplace.json   # Codex marketplace
+├── .claude-plugin/marketplace.json    # Claude Code marketplace
 └── plugins/reme-memory/
-    ├── .codex-plugin/plugin.json           # Codex manifest
-    ├── .claude-plugin/plugin.json          # Claude Code manifest
-    ├── .mcp.json                           # 两个宿主共用
+    ├── .codex-plugin/plugin.json       # Codex manifest
+    ├── .claude-plugin/plugin.json      # Claude Code manifest
+    ├── .mcp.json                       # 两个宿主共用
     ├── hooks/
-    │   ├── codex-hooks.json                # Codex lifecycle 配置
-    │   ├── claude-hooks.json               # Claude Code lifecycle 配置
-    │   └── auto_memory.py                  # 共用 MCP/记忆适配实现
-    ├── skills/reme-memory/SKILL.md         # 共用 Recall-only Skill
+    │   ├── codex-hooks.json            # Codex lifecycle 配置
+    │   ├── claude-hooks.json           # Claude Code lifecycle 配置
+    │   └── auto_memory.py              # 共用 MCP/记忆适配实现
+    ├── skills/reme-memory/SKILL.md     # 共用 Recall-only Skill
     └── bin/
-        ├── reme-hook-dispatch.js           # Claude Code 跨平台 exec-form dispatcher
-        ├── reme-hook-launcher              # macOS/Linux Python launcher
-        └── reme-hook-launcher.exe          # Windows GUI/no-console launcher
+        ├── reme-hook-dispatch.js       # Claude Code 跨平台 exec-form dispatcher
+        ├── reme-hook-launcher          # macOS/Linux Python launcher
+        └── reme-hook-launcher.exe      # Windows GUI/no-console launcher
 ```
 
 两个 manifest 都显式引用自己的 hook 文件：
@@ -101,10 +103,11 @@ plugins/reme-memory/.mcp.json
 
 ## 安装到 Codex
 
-注册本地 marketplace：
+先克隆本仓库（只需一次），仓库根目录就是 marketplace：
 
 ```text
-codex plugin marketplace add "<解压后的 reme-universal-marketplace 路径>"
+git clone https://github.com/rvaim/ReMe
+codex plugin marketplace add "<仓库根目录路径，例如 /path/to/ReMe>"
 ```
 
 然后启动或重启 Codex，在 `/plugins` 中打开 `ReMe Local` marketplace 并安装 `reme-memory`。部分 Codex 版本也提供：
@@ -123,17 +126,23 @@ Codex hook 行为：
 
 ## 安装到 Claude Code
 
+先克隆本仓库（只需一次），仓库根目录就是 marketplace：
+
+```text
+git clone https://github.com/rvaim/ReMe
+```
+
 在 Claude Code 中执行：
 
 ```text
-/plugin marketplace add <解压后的 reme-universal-marketplace 路径>
+/plugin marketplace add <仓库根目录路径>
 /plugin install reme-memory@reme-local
 ```
 
 也可以使用非交互 CLI：
 
 ```text
-claude plugin marketplace add "<解压后的 reme-universal-marketplace 路径>"
+claude plugin marketplace add "<仓库根目录路径>"
 claude plugin install reme-memory@reme-local
 ```
 
