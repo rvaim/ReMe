@@ -2,7 +2,7 @@
 
 这是一个同时支持 **Claude Code** 与 **OpenAI Codex** 的 ReMe 长期记忆插件。它以 ReMe 官方 Claude Code 集成为主基线，只在 Codex 缺少服务端 transcript adapter 的位置增加必要适配。两个宿主共用一个插件目录、一份 Recall Skill、一份 MCP 配置和同一条记忆语言策略；manifest 与 hook 配置仅保留宿主协议要求的最小差异。
 
-仓库本身就是一个 marketplace：直接在 Codex / Claude Code 中把本仓库 URL 添加为 marketplace 即可在线安装，无需克隆、打包或解压。
+仓库本身就是一个 marketplace：直接在 Codex / Claude Code 中把本仓库添加为 marketplace 即可在线安装，无需克隆、打包或解压。本仓库 `main` 分支是 ReMe 官方服务端代码，插件发布在 `rvaim` 分支，安装时需按下方说明指定分支。
 
 当前版本：`0.2.0+universal.local-20260811-1021Z`。
 
@@ -103,11 +103,13 @@ plugins/reme-memory/.mcp.json
 
 ## 安装到 Codex
 
-直接从 GitHub 在线添加 marketplace（无需克隆）：
+插件发布在 `rvaim` 分支（`main` 分支保留 ReMe 官方服务端代码，不包含插件）。在线添加 marketplace 时指定分支：
 
 ```text
-codex plugin marketplace add https://github.com/rvaim/ReMe
+codex plugin marketplace add rvaim/ReMe --ref rvaim
 ```
+
+等价写法：`codex plugin marketplace add rvaim/ReMe@rvaim`。
 
 然后启动或重启 Codex，在 `/plugins` 中打开 `ReMe Local` marketplace 并安装 `reme-memory`。部分 Codex 版本也提供：
 
@@ -131,17 +133,17 @@ Codex hook 行为：
 
 ## 安装到 Claude Code
 
-直接从 GitHub 在线添加 marketplace（无需克隆）。在 Claude Code 中执行：
+插件发布在 `rvaim` 分支（`main` 分支保留 ReMe 官方服务端代码，不包含插件）。在线添加 marketplace 时用 `#` 指定分支，注意 URL 需带 `.git` 后缀：
 
 ```text
-/plugin marketplace add https://github.com/rvaim/ReMe
+/plugin marketplace add https://github.com/rvaim/ReMe.git#rvaim
 /plugin install reme-memory@reme-local
 ```
 
-也可以使用非交互 CLI：
+也可以使用非交互 CLI（同样指定 `#rvaim` 分支）：
 
 ```text
-claude plugin marketplace add "https://github.com/rvaim/ReMe"
+claude plugin marketplace add "https://github.com/rvaim/ReMe.git#rvaim"
 claude plugin install reme-memory@reme-local
 ```
 
