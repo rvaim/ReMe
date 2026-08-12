@@ -1,97 +1,59 @@
 #!/usr/bin/env node
 "use strict";
 
-// Cross-platform Claude Code dispatcher.
-// Claude Code invokes this file in exec form (`command` + `args`), so no Bash,
-// No host shell is selected by the plugin. The
-// dispatcher only chooses the already-tested platform launcher and preserves
-// hook stdin as raw bytes.
-
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { spawn } = require("child_process");
+const { spawnSync } = require("child_process");
 
-function log(status, detail = "") {
+function log(message) {
   try {
-    const logDir = path.join(os.homedir(), ".reme", "log");
-    fs.mkdirSync(logDir, { recursive: true });
+    const dir = path.join(os.homedir(), ".reme", "log");
+    fs.mkdirSync(dir, { recursive: true });
     const stamp = new Date().toISOString().replace("T", " ").replace("Z", "");
-    const suffix = detail ? ` ${detail}` : "";
-    fs.appendFileSync(
-      path.join(logDir, "reme-plugin.log"),
-      `${stamp} [dispatcher] ${status}${suffix}\n`,
-      { encoding: "utf8" },
-    );
+    fs.appendFileSync(path.join(dir, "reme-plugin.log"), `${stamp} [dispatcher] ${message}\n`, "utf8");
   } catch (_) {
-    // Memory recording is best-effort; diagnostics must never break the host.
+    // Best effort only.
   }
 }
 
-const mode = process.argv[2] || "";
-if (mode !== "--stop") {
-  log("invalid-mode", `mode=${JSON.stringify(mode)}`);
-  process.exit(0);
-}
-
-const pluginRoot =
-  process.env.CLAUDE_PLUGIN_ROOT ||
-  process.env.PLUGIN_ROOT ||
-  path.resolve(__dirname, "..");
-
+const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || process.env.PLUGIN_ROOT || path.dirname(path.dirname(__filename));
+const args = process.argv.slice(2);
 let command;
-let args;
+let commandArgs;
 if (process.platform === "win32") {
   command = path.join(pluginRoot, "bin", "reme-hook-launcher.exe");
-  args = [mode];
+  commandArgs = args;
 } else {
-  // Use the platform's POSIX shell only to execute the portable launcher; the
-  // Claude hook itself remains exec-form and never depends on Claude's shell.
   command = "/bin/sh";
-  args = [path.join(pluginRoot, "bin", "reme-hook-launcher"), mode];
+  commandArgs = [path.join(pluginRoot, "bin", "reme-hook-launcher"), ...args];
 }
 
-let child;
+let input = Buffer.alloc(0);
 try {
-  child = spawn(command, args, {
-    cwd: pluginRoot,
-    env: process.env,
-    shell: false,
+  input = fs.readFileSync(0);
+} catch (_) {
+  input = Buffer.alloc(0);
+}
+
+try {
+  const result = spawnSync(command, commandArgs, {
+    input,
+    encoding: null,
     windowsHide: true,
-    stdio: ["pipe", "ignore", "ignore"],
+    shell: false,
+    env: process.env,
+    maxBuffer: 1024 * 1024,
   });
+  if (result.stdout && result.stdout.length) {
+    process.stdout.write(result.stdout);
+  }
+  if (result.error) {
+    log(`spawn failed: ${result.error.message}`);
+  } else if (typeof result.status === "number" && result.status !== 0) {
+    log(`launcher exited with status ${result.status}`);
+  }
 } catch (error) {
-  log("spawn-error", String(error));
-  process.exit(0);
+  log(`dispatcher failed: ${error && error.message ? error.message : String(error)}`);
 }
-
-let finished = false;
-function finish() {
-  if (finished) return;
-  finished = true;
-  process.exit(0);
-}
-
-child.on("error", (error) => {
-  log("child-error", String(error));
-  finish();
-});
-child.on("close", (code, signal) => {
-  if (code !== 0) {
-    log("child-exit", `code=${String(code)} signal=${String(signal || "")}`);
-  }
-  finish();
-});
-child.stdin.on("error", (error) => {
-  // EPIPE only means the child exited before consuming all stdin.
-  if (error && error.code !== "EPIPE") {
-    log("stdin-error", String(error));
-  }
-});
-process.stdin.on("error", (error) => {
-  log("hook-stdin-error", String(error));
-  try {
-    child.stdin.end();
-  } catch (_) {}
-});
-process.stdin.pipe(child.stdin);
+process.exit(0);

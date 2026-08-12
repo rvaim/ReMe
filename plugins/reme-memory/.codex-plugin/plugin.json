@@ -1,35 +1,34 @@
 {
   "name": "reme-memory",
-  "version": "0.2.1+universal.local-20260812-0322Z",
-  "description": "Shared ReMe long-term memory integration for Codex and Claude Code, derived from ReMe's official Claude Code plugin.",
+  "version": "0.3.0+universal.local-20260812-0300Z",
+  "description": "Persistent ReMe memory with automatic gated recall and automatic memory writing.",
   "author": {
-    "name": "Community universal adapter for ReMe"
+    "name": "ReMe Universal Plugin contributors"
   },
   "license": "Apache-2.0",
   "keywords": [
     "reme",
     "memory",
-    "codex",
+    "recall",
     "claude-code",
-    "mcp"
+    "codex"
   ],
   "skills": "./skills/",
-  "mcpServers": "./.mcp.json",
   "hooks": "./hooks/codex-hooks.json",
+  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "ReMe Memory",
-    "shortDescription": "Persistent ReMe memory for Codex and Claude Code.",
-    "longDescription": "Recall ReMe memory through MCP and record completed conversations automatically with host-native lifecycle hooks.",
-    "developerName": "Community universal adapter for ReMe",
+    "shortDescription": "Automatic ReMe write and gated recall",
+    "longDescription": "Writes completed turns to ReMe and recalls relevant cross-session memory before selected prompts.",
+    "developerName": "ReMe Universal Plugin contributors",
     "category": "Productivity",
     "capabilities": [
-      "Long-term memory recall",
-      "Automatic conversation capture",
-      "Conversation-language preservation",
+      "Automatic memory write",
+      "Gated automatic recall",
       "ReMe MCP tools"
     ],
     "defaultPrompt": [
-      "Recall relevant ReMe memory before answering when prior context matters."
+      "Use recalled ReMe context as historical background, and use the reme-memory skill for deeper history when needed."
     ]
   }
 }

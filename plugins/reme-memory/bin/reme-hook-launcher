@@ -1,95 +1,34 @@
 #!/bin/sh
-# POSIX launcher for Claude Code and Codex on macOS/Linux.
-# Interpreter policy: REME_PYTHON, legacy REME_CODEX_PYTHON, python3, python.
-# Every candidate must complete a real Python >=3.10 probe within three seconds.
-# The probe reads /dev/null so the original UTF-8 hook stdin remains untouched.
 
 plugin_root=${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}
 if [ -z "$plugin_root" ]; then
-    script_dir=$(CDPATH= cd "$(dirname "$0")" 2>/dev/null && pwd)
-    plugin_root=$(dirname "$script_dir")
+    script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" 2>/dev/null && pwd)
+    plugin_root=$(dirname -- "$script_dir")
 fi
+hook="$plugin_root/hooks/reme_hook.py"
+log_file="$HOME/.reme/log/reme-plugin.log"
 
-hook="$plugin_root/hooks/auto_memory.py"
-log_dir="${HOME:-}/.reme/log"
-log_file="$log_dir/reme-plugin.log"
-probe_ticks=30
-
-log_line() {
-    [ -n "${HOME:-}" ] || return 0
-    mkdir -p "$log_dir" 2>/dev/null || return 0
-    stamp=$(date '+%Y-%m-%d %H:%M:%S' 2>/dev/null || printf 'unknown-time')
-    printf '%s [%s] %s\n' "$stamp" "$1" "$2" >> "$log_file" 2>/dev/null || true
+write_log() {
+    mkdir -p "$(dirname -- "$log_file")" 2>/dev/null || true
+    printf '%s [launcher] %s\n' "$(date '+%Y-%m-%d %H:%M:%S' 2>/dev/null || printf unknown-time)" "$1" >> "$log_file" 2>/dev/null || true
 }
 
 probe_python() {
-    probe_out=$(mktemp "${TMPDIR:-/tmp}/reme-memory-probe.XXXXXX") || return 125
-
-    "$@" -c 'import sys; print(sys.executable); raise SystemExit(0 if sys.version_info >= (3, 10) else 3)' \
-        </dev/null >"$probe_out" 2>/dev/null &
-    probe_pid=$!
-    tick=0
-
-    while kill -0 "$probe_pid" 2>/dev/null; do
-        if [ "$tick" -ge "$probe_ticks" ]; then
-            pkill -TERM -P "$probe_pid" 2>/dev/null || true
-            kill "$probe_pid" 2>/dev/null || true
-            sleep 0.1
-            pkill -KILL -P "$probe_pid" 2>/dev/null || true
-            kill -KILL "$probe_pid" 2>/dev/null || true
-            wait "$probe_pid" 2>/dev/null || true
-            rm -f "$probe_out" 2>/dev/null || true
-            return 124
-        fi
-        sleep 0.1
-        tick=$((tick + 1))
-    done
-
-    wait "$probe_pid"
-    probe_status=$?
-    if [ "$probe_status" -eq 0 ]; then
-        cat "$probe_out"
-    fi
-    rm -f "$probe_out" 2>/dev/null || true
-    return "$probe_status"
+    "$@" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) and sys.executable else 3)' >/dev/null 2>&1
 }
 
-if [ -n "${REME_PYTHON:-}" ]; then
-    if runtime=$(probe_python "$REME_PYTHON"); then
-        log_line python "selected candidate=REME_PYTHON executable=$runtime"
-        exec "$REME_PYTHON" "$hook" "$@"
-    else
-        status=$?
-        log_line python "probe rejected candidate=REME_PYTHON exit=$status"
-    fi
+if [ -n "${REME_PYTHON:-}" ] && probe_python "$REME_PYTHON"; then
+    exec env PYTHONUTF8=1 PYTHONIOENCODING=utf-8 "$REME_PYTHON" "$hook" "$@"
+fi
+if [ -n "${REME_CODEX_PYTHON:-}" ] && probe_python "$REME_CODEX_PYTHON"; then
+    exec env PYTHONUTF8=1 PYTHONIOENCODING=utf-8 "$REME_CODEX_PYTHON" "$hook" "$@"
+fi
+if command -v python3 >/dev/null 2>&1 && probe_python python3; then
+    exec env PYTHONUTF8=1 PYTHONIOENCODING=utf-8 python3 "$hook" "$@"
+fi
+if command -v python >/dev/null 2>&1 && probe_python python; then
+    exec env PYTHONUTF8=1 PYTHONIOENCODING=utf-8 python "$hook" "$@"
 fi
 
-if [ -n "${REME_CODEX_PYTHON:-}" ]; then
-    if runtime=$(probe_python "$REME_CODEX_PYTHON"); then
-        log_line python "selected candidate=REME_CODEX_PYTHON executable=$runtime"
-        exec "$REME_CODEX_PYTHON" "$hook" "$@"
-    else
-        status=$?
-        log_line python "probe rejected candidate=REME_CODEX_PYTHON exit=$status"
-    fi
-fi
-
-if runtime=$(probe_python python3); then
-    log_line python "selected candidate=python3 executable=$runtime"
-    exec python3 "$hook" "$@"
-else
-    status=$?
-    log_line python "probe rejected candidate=python3 exit=$status"
-fi
-
-if runtime=$(probe_python python); then
-    log_line python "selected candidate=python executable=$runtime"
-    exec python "$hook" "$@"
-else
-    status=$?
-    log_line python "probe rejected candidate=python exit=$status"
-fi
-
-# Memory recording is best-effort. Missing Python must not break either host.
-log_line launcher "no usable Python >=3.10 interpreter found; tried REME_PYTHON, REME_CODEX_PYTHON, python3, python"
+write_log 'no usable Python 3.10+ interpreter found; tried REME_PYTHON, REME_CODEX_PYTHON, python3, python'
 exit 0

@@ -1,5 +1,23 @@
 {
+  "description": "Automatic gated recall before prompts and automatic ReMe memory writing after completed turns.",
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/bin/reme-hook-dispatch.js",
+              "--host",
+              "claude",
+              "--user-prompt"
+            ],
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
@@ -8,6 +26,8 @@
             "command": "node",
             "args": [
               "${CLAUDE_PLUGIN_ROOT}/bin/reme-hook-dispatch.js",
+              "--host",
+              "claude",
               "--stop"
             ],
             "timeout": 30

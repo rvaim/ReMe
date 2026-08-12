@@ -1,17 +1,19 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "reme-memory",
-  "version": "0.2.1+universal.local-20260812-0322Z",
-  "description": "Shared ReMe long-term memory integration for Claude Code and Codex, based on ReMe's official Claude Code plugin.",
+  "displayName": "ReMe Memory",
+  "version": "0.3.0+universal.local-20260812-0300Z",
+  "description": "Persistent ReMe memory with automatic gated recall and automatic memory writing.",
   "author": {
-    "name": "Community universal adapter for ReMe"
+    "name": "ReMe Universal Plugin contributors"
   },
   "license": "Apache-2.0",
   "keywords": [
     "reme",
     "memory",
+    "recall",
     "claude-code",
-    "codex",
-    "mcp"
+    "codex"
   ],
   "skills": "./skills/",
   "hooks": "./hooks/claude-hooks.json",

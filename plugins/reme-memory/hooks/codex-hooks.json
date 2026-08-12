@@ -5,9 +5,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh \"${PLUGIN_ROOT}/bin/reme-hook-launcher\" --capture",
-            "commandWindows": "& \"${PLUGIN_ROOT}\\bin\\reme-hook-launcher.exe\" --capture",
-            "timeout": 15
+            "command": "sh \"${PLUGIN_ROOT}/bin/reme-hook-launcher\" --host codex --user-prompt",
+            "commandWindows": "& \"${PLUGIN_ROOT}\\bin\\reme-hook-launcher.exe\" --host codex --user-prompt",
+            "timeout": 30
           }
         ]
       }
@@ -17,8 +17,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh \"${PLUGIN_ROOT}/bin/reme-hook-launcher\" --stop",
-            "commandWindows": "& \"${PLUGIN_ROOT}\\bin\\reme-hook-launcher.exe\" --stop",
+            "command": "sh \"${PLUGIN_ROOT}/bin/reme-hook-launcher\" --host codex --stop",
+            "commandWindows": "& \"${PLUGIN_ROOT}\\bin\\reme-hook-launcher.exe\" --host codex --stop",
             "timeout": 30
           }
         ]

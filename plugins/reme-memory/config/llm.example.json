@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "default": {
+    "enabled": true,
+    "api": "responses",
+    "base_url": "https://api.example.com/v1",
+    "api_key": "REPLACE_ME",
+    "model": "REPLACE_ME",
+    "timeout_seconds": 8,
+    "reasoning_effort": "none",
+    "max_output_tokens": 120
+  },
+  "recall_gate": {
+    "recent_user_messages": 2,
+    "max_prompt_chars": 5000,
+    "search_limit": 5,
+    "inject_limit": 3,
+    "max_context_chars": 6000,
+    "reme_timeout_seconds": 3,
+    "min_score": null
+  }
+}
