@@ -2,7 +2,7 @@
 
 这是一个同时支持 **Claude Code** 与 **OpenAI Codex** 的 ReMe 长期记忆插件。它以 ReMe 官方 Claude Code 集成为主基线，只在 Codex 缺少服务端 transcript adapter 的位置增加必要适配。两个宿主共用一个插件目录、一份 Recall Skill、一份 MCP 配置和同一条记忆语言策略；manifest 与 hook 配置仅保留宿主协议要求的最小差异。
 
-仓库本身就是一个 marketplace：克隆后把仓库根目录作为 marketplace 路径即可，无需单独打包或解压。
+仓库本身就是一个 marketplace：直接在 Codex / Claude Code 中把本仓库 URL 添加为 marketplace 即可在线安装，无需克隆、打包或解压。
 
 当前版本：`0.2.0+universal.local-20260811-1021Z`。
 
@@ -103,11 +103,10 @@ plugins/reme-memory/.mcp.json
 
 ## 安装到 Codex
 
-先克隆本仓库（只需一次），仓库根目录就是 marketplace：
+直接从 GitHub 在线添加 marketplace（无需克隆）：
 
 ```text
-git clone https://github.com/rvaim/ReMe
-codex plugin marketplace add "<仓库根目录路径，例如 /path/to/ReMe>"
+codex plugin marketplace add https://github.com/rvaim/ReMe
 ```
 
 然后启动或重启 Codex，在 `/plugins` 中打开 `ReMe Local` marketplace 并安装 `reme-memory`。部分 Codex 版本也提供：
@@ -118,6 +117,12 @@ codex plugin add reme-memory@reme-local
 
 安装后新建 Codex thread，使新版 manifest、MCP、Skill 和 hooks 全部重新加载。第一次加载 hook 时，在 Codex 的 hooks/trust 界面批准插件命令。
 
+更新插件时重新拉取 marketplace 快照即可：
+
+```text
+codex plugin marketplace update reme-local
+```
+
 Codex hook 行为：
 
 - `UserPromptSubmit`：按 UTF-8 保存 provisional prompt。
@@ -126,27 +131,27 @@ Codex hook 行为：
 
 ## 安装到 Claude Code
 
-先克隆本仓库（只需一次），仓库根目录就是 marketplace：
+直接从 GitHub 在线添加 marketplace（无需克隆）。在 Claude Code 中执行：
 
 ```text
-git clone https://github.com/rvaim/ReMe
-```
-
-在 Claude Code 中执行：
-
-```text
-/plugin marketplace add <仓库根目录路径>
+/plugin marketplace add https://github.com/rvaim/ReMe
 /plugin install reme-memory@reme-local
 ```
 
 也可以使用非交互 CLI：
 
 ```text
-claude plugin marketplace add "<仓库根目录路径>"
+claude plugin marketplace add "https://github.com/rvaim/ReMe"
 claude plugin install reme-memory@reme-local
 ```
 
 重新打开 Claude Code session，然后用 `/hooks` 检查来自 `reme-memory` 的 Stop hook。Claude Code 路径只发送 `session_id + memory_hint`，ReMe 服务端自行加载、过滤并去重 transcript。
+
+更新插件时重新拉取 marketplace 即可：
+
+```text
+/plugin marketplace update reme-local
+```
 
 ## Python 解释器选择
 
